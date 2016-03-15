@@ -1,0 +1,19 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:stock.location:"
+msgid "You do not have permisons to move products from/to location \"%s\"."
+msgstr "No tienes permisos para mover productos desde/a la ubicación \"%s\"."
+
+msgctxt "field:stock.location,group:"
+msgid "Group"
+msgstr "Grupo"
+
+msgctxt "help:stock.location,group:"
+msgid ""
+"If defined only users from this group will be allowed to make moves from/to "
+"this location"
+msgstr ""
+"Si se define, solo los usuarios de este grupo podrán realizar movimientos "
+"desde/hacia esta ubiación"
