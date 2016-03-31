@@ -3,7 +3,7 @@
      copyright notices and license terms. -->
 <data>
     <xpath expr="/form/field[@name='type']" position="after">
-        <label name="group"/>
-        <field name="group"/>
+        <label name="outputs_group"/>
+        <field name="outputs_group"/>
     </xpath>
 </data>

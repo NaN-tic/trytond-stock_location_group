@@ -67,40 +67,41 @@ class TestCase(unittest.TestCase):
                 })
             group, = self.group.create([{'name': 'Restricted locations'}])
 
-            def do_move():
+            def do_move(from_location, to_location):
                 move, = self.move.create([{
                             'product': product.id,
                             'uom': kg.id,
                             'quantity': 1.0,
-                            'from_location': supplier.id,
-                            'to_location': storage.id,
+                            'from_location': from_location.id,
+                            'to_location': to_location.id,
                             'company': company.id,
                             'unit_price': Decimal('1'),
                             'currency': currency.id,
                             }])
                 self.move.do([move])
+
             # No problem with no restriction
+            do_move(supplier, storage)
 
-            do_move()
-            self.location.write([supplier], {'group': group.id})
+            # Restricted location
+            self.location.write([supplier], {'outputs_group': group.id})
 
+            # Unable to do output move
             access_error = ('You do not have permisons to move products '
-                'from/to location "%s".')
+                'from location "%s".')
             with self.assertRaises(UserError) as cm:
-                do_move()
+                do_move(supplier, storage)
             self.assertEqual(cm.exception.message,
                 access_error % supplier.rec_name)
-            self.location.write([supplier], {'group': None})
-            self.location.write([storage], {'group': group.id})
-            with self.assertRaises(UserError) as cm:
-                do_move()
-            self.assertEqual(cm.exception.message,
-                access_error % storage.rec_name)
 
+            # No problem doing input move
+            do_move(storage, supplier)
+
+            # No problem if user belongs to restricted group
             self.user.write([self.user(USER)], {
                     'groups': [('add', [group.id])],
                     })
-            do_move()
+            do_move(supplier, storage)
 
 
 def suite():

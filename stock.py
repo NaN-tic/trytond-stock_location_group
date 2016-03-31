@@ -12,20 +12,22 @@ __metaclass__ = PoolMeta
 class Location:
     __name__ = 'stock.location'
     __metaclass__ = PoolMeta
-    group = fields.Many2One('res.group', 'Group', states=STATES,
-        depends=DEPENDS, help=('If defined only users from this group will be '
-            'allowed to make moves from/to this location'))
+    outputs_group = fields.Many2One('res.group', 'Outputs Group',
+        states=STATES, depends=DEPENDS,
+        help='If defined only users from this group will be allowed to make '
+        'moves from this location')
 
     @classmethod
     def __setup__(cls):
         super(Location, cls).__setup__()
         cls._error_messages.update({
-                'location_access_error': ('You do not have permisons to move '
-                    'products from/to location "%s".'),
+                'no_permissions_for_output_moves': (
+                    'You do not have permisons to move products from location '
+                    '"%s".'),
                 })
 
     @classmethod
-    def check_location_groups(cls, locations):
+    def check_location_outputs_group(cls, locations):
         pool = Pool()
         User = pool.get('res.user')
         user_id = Transaction().user
@@ -33,10 +35,10 @@ class Location:
             return
         groups = set(User(user_id).groups)
         for location in locations:
-            if not location.group:
+            if not location.outputs_group:
                 continue
-            if location.group not in groups:
-                cls.raise_user_error('location_access_error',
+            if location.outputs_group not in groups:
+                cls.raise_user_error('no_permissions_for_output_moves',
                     location.rec_name)
 
 
@@ -50,7 +52,6 @@ class Move:
         super(Move, cls).validate(moves)
         locations = set([])
         for move in moves:
-            if (move.state == 'done' and move.internal_quantity):
+            if move.state == 'done' and move.internal_quantity:
                 locations.add(move.from_location)
-                locations.add(move.to_location)
-        Location.check_location_groups(locations)
+        Location.check_location_outputs_group(list(locations))
