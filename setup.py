@@ -6,7 +6,7 @@ import re
 import os
 import ConfigParser
 
-MODULE = 'stock_location_user'
+MODULE = 'stock_location_outputs_group'
 PREFIX = 'nantic'
 MODULE2PREFIX = {}
 

@@ -1,20 +1,22 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from decimal import Decimal
 import doctest
 import unittest
+from decimal import Decimal
+
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_view, test_depends
-from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
-from trytond.transaction import Transaction
 from trytond.exceptions import UserError
+from trytond.tests.test_tryton import (test_view, test_depends, POOL, DB_NAME,
+    USER, CONTEXT)
+from trytond.transaction import Transaction
 
 
 class TestCase(unittest.TestCase):
     'Test module'
 
     def setUp(self):
-        trytond.tests.test_tryton.install_module('stock_location_user')
+        trytond.tests.test_tryton.install_module(
+            'stock_location_outputs_group')
         self.user = POOL.get('res.user')
         self.group = POOL.get('res.group')
         self.location = POOL.get('ir.model.access')
@@ -28,7 +30,7 @@ class TestCase(unittest.TestCase):
 
     def test0005views(self):
         'Test views'
-        test_view('stock_location_user')
+        test_view('stock_location_outputs_group')
 
     def test0006depends(self):
         'Test depends'

@@ -8,4 +8,4 @@ def register():
     Pool.register(
         Location,
         Move,
-        module='stock_location_user', type_='model')
+        module='stock_location_outputs_group', type_='model')
