@@ -16,7 +16,7 @@ class TestCase(unittest.TestCase):
 
     def setUp(self):
         trytond.tests.test_tryton.install_module(
-            'stock_location_outputs_group')
+            'stock_location_group')
         self.user = POOL.get('res.user')
         self.group = POOL.get('res.group')
         self.location = POOL.get('ir.model.access')
@@ -30,7 +30,7 @@ class TestCase(unittest.TestCase):
 
     def test0005views(self):
         'Test views'
-        test_view('stock_location_outputs_group')
+        test_view('stock_location_group')
 
     def test0006depends(self):
         'Test depends'
