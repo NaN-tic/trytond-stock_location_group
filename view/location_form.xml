@@ -5,5 +5,7 @@
     <xpath expr="/form/field[@name='type']" position="after">
         <label name="outputs_group"/>
         <field name="outputs_group"/>
+        <label name="inputs_group"/>
+        <field name="inputs_group"/>
     </xpath>
 </data>

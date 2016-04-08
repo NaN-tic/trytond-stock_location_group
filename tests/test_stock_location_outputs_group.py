@@ -57,6 +57,7 @@ class TestCase(unittest.TestCase):
                         }])
             supplier, = self.location.search([('code', '=', 'SUP')])
             storage, = self.location.search([('code', '=', 'STO')])
+            customer, = self.location.search([('code', '=', 'CUS')])
             company, = self.company.search([
                     ('rec_name', '=', 'Dunder Mifflin'),
                     ])
@@ -96,12 +97,21 @@ class TestCase(unittest.TestCase):
 
             # No problem doing input move
             do_move(storage, supplier)
+            do_move(storage, customer)
+
+            # Restricted input location
+            self.location.write([customer], {'inputs_group': group.id})
+            with self.assertRaises(UserError) as cm:
+                do_move(storage, customer)
+            self.assertEqual(cm.exception.message,
+                access_error % customer.rec_name)
 
             # No problem if user belongs to restricted group
             self.user.write([self.user(USER)], {
                     'groups': [('add', [group.id])],
                     })
             do_move(supplier, storage)
+            do_move(storage, customer)
 
 
 def suite():
