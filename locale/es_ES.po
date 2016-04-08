@@ -6,9 +6,21 @@ msgctxt "error:stock.location:"
 msgid "You do not have permisons to move products from location \"%s\"."
 msgstr "No tienes permisos para mover productos desde la ubicación \"%s\"."
 
+msgctxt "field:stock.location,inputs_group:"
+msgid "Inputs Group"
+msgstr "Grupo entradas"
+
 msgctxt "field:stock.location,outputs_group:"
 msgid "Outputs Group"
 msgstr "Grupo salidas"
+
+msgctxt "help:stock.location,inputs_group:"
+msgid ""
+"If defined only users from this group will be allowed to make moves to this "
+"location"
+msgstr ""
+"Si se define, solo los usuarios de este grupo podrán realizar movimientos "
+"hacia esta ubiación"
 
 msgctxt "help:stock.location,outputs_group:"
 msgid ""
