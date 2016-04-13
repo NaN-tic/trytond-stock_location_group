@@ -8,7 +8,7 @@ msgstr "No teniu permisos per moure productes des de la ubicació \"%s\"."
 
 msgctxt "field:stock.location,inputs_group:"
 msgid "Inputs Group"
-msgstr "Group entrades"
+msgstr "Grup entrades"
 
 msgctxt "field:stock.location,outputs_group:"
 msgid "Outputs Group"
