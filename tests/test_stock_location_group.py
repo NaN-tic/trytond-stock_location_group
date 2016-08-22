@@ -6,86 +6,67 @@ from decimal import Decimal
 
 import trytond.tests.test_tryton
 from trytond.exceptions import UserError
-from trytond.tests.test_tryton import (test_view, test_depends, POOL, DB_NAME,
-    USER, CONTEXT)
+from trytond.pool import Pool
+from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
 
+from trytond.modules.company.tests import create_company, set_company
 
-class TestCase(unittest.TestCase):
+
+class TestCase(ModuleTestCase):
     'Test module'
+    module = 'stock_location_group'
 
-    def setUp(self):
-        trytond.tests.test_tryton.install_module(
-            'stock_location_group')
-        self.user = POOL.get('res.user')
-        self.group = POOL.get('res.group')
-        self.location = POOL.get('ir.model.access')
-        self.template = POOL.get('product.template')
-        self.product = POOL.get('product.product')
-        self.category = POOL.get('product.category')
-        self.uom = POOL.get('product.uom')
-        self.location = POOL.get('stock.location')
-        self.move = POOL.get('stock.move')
-        self.company = POOL.get('company.company')
-
-    def test0005views(self):
-        'Test views'
-        test_view('stock_location_group')
-
-    def test0006depends(self):
-        'Test depends'
-        test_depends()
-
+    @with_transaction()
     def test_location_access(self):
         'Test location access'
-        with Transaction().start(DB_NAME, USER, context=CONTEXT):
-            category, = self.category.create([{
-                        'name': 'Test location access',
-                        }])
-            kg, = self.uom.search([('name', '=', 'Kilogram')])
-            template, = self.template.create([{
+        pool = Pool()
+        User = pool.get('res.user')
+        Group = pool.get('res.group')
+        Location = pool.get('ir.model.access')
+        Template = pool.get('product.template')
+        Product = pool.get('product.product')
+        Uom = pool.get('product.uom')
+        Location = pool.get('stock.location')
+        Move = pool.get('stock.move')
+
+        # Create Company
+        company = create_company()
+        with set_company(company):
+            kg, = Uom.search([('name', '=', 'Kilogram')])
+            template, = Template.create([{
                         'name': 'Test location access',
                         'type': 'goods',
                         'list_price': Decimal(1),
                         'cost_price': Decimal(0),
-                        'category': category.id,
                         'cost_price_method': 'fixed',
                         'default_uom': kg.id,
                         }])
-            product, = self.product.create([{
+            product, = Product.create([{
                         'template': template.id,
                         }])
-            supplier, = self.location.search([('code', '=', 'SUP')])
-            storage, = self.location.search([('code', '=', 'STO')])
-            customer, = self.location.search([('code', '=', 'CUS')])
-            company, = self.company.search([
-                    ('rec_name', '=', 'Dunder Mifflin'),
-                    ])
-            currency = company.currency
-            self.user.write([self.user(USER)], {
-                'main_company': company.id,
-                'company': company.id,
-                })
-            group, = self.group.create([{'name': 'Restricted locations'}])
+            supplier, = Location.search([('code', '=', 'SUP')])
+            storage, = Location.search([('code', '=', 'STO')])
+            customer, = Location.search([('code', '=', 'CUS')])
+
+            group, = Group.create([{'name': 'Restricted locations'}])
 
             def do_move(from_location, to_location):
-                move, = self.move.create([{
+                move, = Move.create([{
                             'product': product.id,
                             'uom': kg.id,
                             'quantity': 1.0,
                             'from_location': from_location.id,
                             'to_location': to_location.id,
-                            'company': company.id,
                             'unit_price': Decimal('1'),
-                            'currency': currency.id,
                             }])
-                self.move.do([move])
+                Move.do([move])
 
             # No problem with no restriction
             do_move(supplier, storage)
 
             # Restricted location
-            self.location.write([supplier], {'outputs_group': group.id})
+            Location.write([supplier], {'outputs_group': group.id})
 
             # Unable to do output move
             access_error = ('You do not have permisons to move products '
@@ -100,14 +81,14 @@ class TestCase(unittest.TestCase):
             do_move(storage, customer)
 
             # Restricted input location
-            self.location.write([customer], {'inputs_group': group.id})
+            Location.write([customer], {'inputs_group': group.id})
             with self.assertRaises(UserError) as cm:
                 do_move(storage, customer)
             self.assertEqual(cm.exception.message,
                 access_error % customer.rec_name)
 
             # No problem if user belongs to restricted group
-            self.user.write([self.user(USER)], {
+            User.write([User(Transaction().user)], {
                     'groups': [('add', [group.id])],
                     })
             do_move(supplier, storage)
