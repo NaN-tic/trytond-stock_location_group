@@ -6,12 +6,10 @@ from trytond.transaction import Transaction
 from trytond.modules.stock.location import STATES, DEPENDS
 
 __all__ = ['Location', 'Move']
-__metaclass__ = PoolMeta
 
 
-class Location:
+class Location(metaclass=PoolMeta):
     __name__ = 'stock.location'
-    __metaclass__ = PoolMeta
     outputs_group = fields.Many2One('res.group', 'Outputs Group',
         states=STATES, depends=DEPENDS,
         help='If defined only users from this group will be allowed to make '
@@ -56,7 +54,7 @@ class Location:
         return cls._check_location_group(locations, 'inputs')
 
 
-class Move:
+class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
 
     @classmethod
