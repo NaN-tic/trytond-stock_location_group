@@ -26,7 +26,7 @@ class Location:
         super(Location, cls).__setup__()
         cls._error_messages.update({
                 'no_permissions_for_output_moves': (
-                    'You do not have permisons to move products from location '
+                    'You do not have permissions to move products from location '
                     '"%s".'),
                 })
 

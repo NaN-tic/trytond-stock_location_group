@@ -3,7 +3,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:stock.location:"
-msgid "You do not have permisons to move products from location \"%s\"."
+msgid "You do not have permissions to move products from location \"%s\"."
 msgstr "No tienes permisos para mover productos desde la ubicación \"%s\"."
 
 msgctxt "field:stock.location,inputs_group:"
