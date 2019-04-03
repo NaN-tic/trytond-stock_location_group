@@ -1,10 +1,6 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
-
-msgctxt "error:stock.location:"
-msgid "You do not have permissions to move products from location \"%s\"."
-msgstr "No teniu permisos per moure productes des de la ubicació \"%s\"."
 
 msgctxt "field:stock.location,inputs_group:"
 msgid "Inputs Group"
@@ -29,3 +25,7 @@ msgid ""
 msgstr ""
 "Si es defineix només els usuaris d'aquest grup podran realitzar moviments "
 "des d'aquesta ubicació"
+
+msgctxt "model:ir.message,text:msg_no_permissions_for_output_moves"
+msgid "You do not have permissions to move products from location \"%(location)s\"."
+msgstr "No teniu permisos per moure productes des de la ubicació \"%(location)s\"."

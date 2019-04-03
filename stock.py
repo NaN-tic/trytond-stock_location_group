@@ -3,6 +3,8 @@
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 from trytond.modules.stock.location import STATES, DEPENDS
 
 __all__ = ['Location', 'Move']
@@ -20,15 +22,6 @@ class Location(metaclass=PoolMeta):
         'moves to this location')
 
     @classmethod
-    def __setup__(cls):
-        super(Location, cls).__setup__()
-        cls._error_messages.update({
-                'no_permissions_for_output_moves': (
-                    'You do not have permissions to move products from location '
-                    '"%s".'),
-                })
-
-    @classmethod
     def _check_location_group(cls, locations, type_):
         pool = Pool()
         User = pool.get('res.user')
@@ -42,8 +35,9 @@ class Location(metaclass=PoolMeta):
             if not group:
                 continue
             if group not in groups:
-                cls.raise_user_error('no_permissions_for_output_moves',
-                    location.rec_name)
+                raise UserError(
+                    gettext('stock_location_group.msg_no_permissions_for_output_moves',
+                    location=location.rec_name))
 
     @classmethod
     def check_location_outputs_group(cls, locations):

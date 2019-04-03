@@ -38,12 +38,12 @@ class TestCase(ModuleTestCase):
                         'name': 'Test location access',
                         'type': 'goods',
                         'list_price': Decimal(1),
-                        'cost_price': Decimal(0),
                         'cost_price_method': 'fixed',
                         'default_uom': kg.id,
                         }])
             product, = Product.create([{
                         'template': template.id,
+                        'cost_price': Decimal(0),
                         }])
             supplier, = Location.search([('code', '=', 'SUP')])
             storage, = Location.search([('code', '=', 'STO')])
@@ -69,12 +69,12 @@ class TestCase(ModuleTestCase):
             Location.write([supplier], {'outputs_group': group.id})
 
             # Unable to do output move
-            access_error = ('You do not have permisons to move products '
-                'from location "%s".')
+            access_error = ('You do not have permissions to move products '
+                'from location "%(location)s".')
             with self.assertRaises(UserError) as cm:
                 do_move(supplier, storage)
             self.assertEqual(cm.exception.message,
-                access_error % supplier.rec_name)
+                access_error % {'location': supplier.rec_name})
 
             # No problem doing input move
             do_move(storage, supplier)
@@ -85,7 +85,7 @@ class TestCase(ModuleTestCase):
             with self.assertRaises(UserError) as cm:
                 do_move(storage, customer)
             self.assertEqual(cm.exception.message,
-                access_error % customer.rec_name)
+                access_error % {'location': customer.rec_name})
 
             # No problem if user belongs to restricted group
             User.write([User(Transaction().user)], {
