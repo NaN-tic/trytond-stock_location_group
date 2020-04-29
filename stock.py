@@ -5,7 +5,6 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
-from trytond.modules.stock.location import STATES, DEPENDS
 
 __all__ = ['Location', 'Move']
 
@@ -13,11 +12,9 @@ __all__ = ['Location', 'Move']
 class Location(metaclass=PoolMeta):
     __name__ = 'stock.location'
     outputs_group = fields.Many2One('res.group', 'Outputs Group',
-        states=STATES, depends=DEPENDS,
         help='If defined only users from this group will be allowed to make '
         'moves from this location')
     inputs_group = fields.Many2One('res.group', 'Inputs Group',
-        states=STATES, depends=DEPENDS,
         help='If defined only users from this group will be allowed to make '
         'moves to this location')
 
