@@ -1,6 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import fields
+from trytond.model import ModelView, Workflow, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
@@ -49,14 +49,17 @@ class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
 
     @classmethod
-    def validate(cls, moves):
-        pool = Pool()
-        Location = pool.get('stock.location')
-        super(Move, cls).validate(moves)
+    @ModelView.button
+    @Workflow.transition('done')
+    def do(cls, moves):
+        Location = Pool().get('stock.location')
+
         from_locations, to_locations = set(), set()
         for move in moves:
-            if move.state == 'done' and move.internal_quantity:
+            if move.internal_quantity:
                 from_locations.add(move.from_location)
                 to_locations.add(move.to_location)
         Location.check_location_inputs_group(to_locations)
         Location.check_location_outputs_group(from_locations)
+
+        super().do(moves)
