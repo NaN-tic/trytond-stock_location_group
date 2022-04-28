@@ -1,20 +1,21 @@
-# The COPYRIGHT file at the top level of this repository contains the full
-# copyright notices and license terms.
-import doctest
-import unittest
+
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
+
+
 from decimal import Decimal
 
-import trytond.tests.test_tryton
 from trytond.exceptions import UserError
 from trytond.pool import Pool
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
 
-from trytond.modules.company.tests import create_company, set_company
+from trytond.modules.company.tests import (CompanyTestMixin, create_company,
+    set_company)
 
 
-class TestCase(ModuleTestCase):
-    'Test module'
+class StockLocationGroupTestCase(CompanyTestMixin, ModuleTestCase):
+    'Test StockLocationGroup module'
     module = 'stock_location_group'
 
     @with_transaction()
@@ -95,11 +96,4 @@ class TestCase(ModuleTestCase):
             do_move(storage, customer)
 
 
-def suite():
-    suite = trytond.tests.test_tryton.suite()
-    from trytond.modules.company.tests import test_company
-    for test in test_company.suite():
-        if test not in suite and not isinstance(test, doctest.DocTestCase):
-            suite.addTest(test)
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCase))
-    return suite
+del ModuleTestCase
