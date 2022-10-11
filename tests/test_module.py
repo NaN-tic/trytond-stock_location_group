@@ -33,6 +33,7 @@ class StockLocationGroupTestCase(CompanyTestMixin, ModuleTestCase):
 
         # Create Company
         company = create_company()
+        currency = company.currency
         with set_company(company):
             kg, = Uom.search([('name', '=', 'Kilogram')])
             template, = Template.create([{
@@ -60,6 +61,7 @@ class StockLocationGroupTestCase(CompanyTestMixin, ModuleTestCase):
                             'from_location': from_location.id,
                             'to_location': to_location.id,
                             'unit_price': Decimal('1'),
+                            'currency': currency.id,
                             }])
                 Move.do([move])
 
